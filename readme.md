@@ -19,6 +19,7 @@
 - find
 - findWhere
 - where
+- update
 - delete
 - flash
 
@@ -35,7 +36,7 @@ todos.insert({title:"Task 02",status:1})
 //output: {title:"Task 02", status:1, _id:1595165132214}
 ```
 
-`getAll` - it returns array or empty array when no data exist
+`getAll` - it returns an array, returns an empty array when no data exist.
 ```js
 todos.getAll()
 /** output: 
@@ -46,32 +47,37 @@ todos.getAll()
 **/
 ```
 
-`find` - it returns object or undefined when data not found
+`find` - it returns an object, returns undefined when data not found.
 ```js
 todos.find(1595166010878) // pass unique identifier _id
 //output: {title:"Task 01", status:0, _id:1595166010878}
 ```
 
 
-`findWhere` - it returns object or undefined when data not found
+`findWhere` - it returns an object, returns undefined when data not found.
 ```js
 todos.find({_id:1595166010878})
 //output: {title:"Task 01", status:0, _id:1595166010878}
 ```
 
-`where` - it returns array or empty array when data not found
+`where` - it returns an array, returns an empty array when data not found.
 ```js
 todos.find({status:1})
 //output: [{title:"Task 02", status:1, _id:1595165132214}]
 ```
+`update` - it returns an object, returns false when data not found.
+```js
+todos.update(1595165132214,updateObjData)
+//output: [{title:"Task 02 updated", status:1, _id:1595165132214}]
+```
 
-`delete` - it returns true/false
+`delete` - it returns true/false.
 ```js
 todos.delete(1595166010878)
 //output: true
 ```
 
-`falsh` - it deletes all and returns nothing
+`falsh` - it deletes all data with localstorage key and returns nothing.
 ```js
 todos.falsh()
 ```
