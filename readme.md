@@ -1,5 +1,8 @@
-# LS Collection
-Manage browser localStorage key as an object collection.
+<h1 align="center">LS Collection</h1>
+<p align="center">
+    <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://badgen.net/badge/licence/CC BY 4.0/23BCCB" /></a>
+</p>
+<p align="center">Manage browser localStorage key as an object collection.</p>
 
 ### Dependency
 - undescore js
