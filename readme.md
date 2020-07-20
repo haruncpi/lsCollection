@@ -77,7 +77,7 @@ todos.delete(1595166010878)
 //output: true
 ```
 
-`falsh` - it deletes all data with localstorage key and returns nothing.
+`flash` - it deletes all data with localstorage key and returns nothing.
 ```js
-todos.falsh()
+todos.flash()
 ```
