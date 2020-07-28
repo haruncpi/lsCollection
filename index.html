@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LS Collection</title>
+    <script src="ls-collection.js"></script>
+</head>
+
+<body>
+    <button id="btnAdd">Add</button>
+    <button id="btnGetAll">Get All</button>
+
+    <button id="btnFlash">Flash</button>
+
+    <br>
+
+    <input id="txtFind" type="text" value="1595917282099">
+    <button id="btnFind">Find</button>
+    <button id="btnWhere">Where</button>
+    <button id="btnFindWhere">Find Where</button>
+    <button id="btnDel">Del</button>
+
+    <script>
+        var tblTest = new lsCollection('test')
+        var btnAdd = document.getElementById('btnAdd')
+        var btnGetAll = document.getElementById('btnGetAll')
+        var btnDel = document.getElementById('btnDel')
+        var btnFlash = document.getElementById('btnFlash')
+        var btnFind = document.getElementById('btnFind')
+        var btnFind = document.getElementById('btnFind')
+        var btnFindWhere = document.getElementById('btnFindWhere')
+        var btnWhere = document.getElementById('btnWhere')
+
+        let log = console.log
+
+        btnAdd.addEventListener('click', () => {
+            var random = +new Date();
+            
+            tblTest.insert({
+                name: 'alex-' + random
+            })
+            log(tblTest.getAll())
+        })
+
+        btnGetAll.addEventListener('click', () => {
+            log(tblTest.getAll())
+        })
+
+        btnFind.addEventListener('click', () => {
+            var val = txtFind.value
+            log(tblTest.find(val))
+        })
+
+        btnFindWhere.addEventListener('click', () => {
+            var val = txtFind.value
+            log(tblTest.findWhere({_id:val}))
+        })
+
+        btnWhere.addEventListener('click', () => {
+            var val = txtFind.value
+            log(tblTest.where({_id:val}))
+        })
+
+        btnDel.addEventListener('click', () => {
+            var val = txtFind.value
+            log(tblTest.delete(val))
+        })
+
+        btnFlash.addEventListener('click', () => {
+            tblTest.flash()
+            log('flashed!')
+        })
+    </script>
+</body>
+
+</html>

@@ -7,9 +7,7 @@
 "use strict";
 
 function lsCollection(keyName) {
-  if (!window._) throw "underscore js required";
   if (!keyName || keyName === '') throw "a key name required for data sotre"
-
   this.keyName = keyName
 }
 
@@ -17,7 +15,7 @@ lsCollection.prototype = {
   generateId: function () {
     return Date.now()
   },
-  
+
   getAll: function () {
     var items = localStorage.getItem(this.keyName);
     items = JSON.parse(items);
@@ -26,56 +24,61 @@ lsCollection.prototype = {
     else
       return [];
   },
-  
-  find: function (_id) {
-    var items = localStorage.getItem(this.keyName)
-    var findObj = {
-      _id: _id
-    }
-    items = JSON.parse(items)
 
-    return _.findWhere(items, findObj)
+  find: function (_id) {
+    return this.getAll().find(function (obj) {
+      return obj._id == _id
+    })
   },
 
-  
   findWhere: function (findObj) {
     if (typeof findObj !== 'object') throw "object required, given " + typeof findObj;
-    var items = localStorage.getItem(this.keyName)
-    items = JSON.parse(items)
+    var items = this.getAll();
 
-    return _.findWhere(items, findObj)
+    return items.find(function (item) {
+      return Object.keys(findObj).every(function (key) {
+        return item[key] == findObj[key]
+      })
+    })
   },
-  
+
   where: function (findObj) {
     if (typeof findObj !== 'object') throw "object required, given " + typeof findObj;
-    var items = localStorage.getItem(this.keyName)
-    items = JSON.parse(items)
+    var items = this.getAll();
 
-    return _.where(items, findObj)
+    var result = items.find(function (item) {
+      return Object.keys(findObj).every(function (key) {
+        return item[key] == findObj[key]
+      })
+    })
+
+    return result == undefined ? [] : result;
+
   },
-  
-  insert: function (saveValue) {
+
+  insert: function (obj) {
+    if (typeof obj !== 'object') throw "object required, given " + typeof obj;
     var items = this.getAll()
     var generatedId = this.generateId()
 
-    saveValue._id = generatedId
+    obj._id = generatedId
 
-    items.push(saveValue)
+    items.push(obj)
     localStorage.setItem(this.keyName, JSON.stringify(items))
 
-    return saveValue;
+    return obj;
 
   },
-  
+
   update: function (_id, updateData) {
     var items = this.getAll()
-    var findObj = {
-      _id: _id
-    }
+    var index = items.findIndex(function (item) {
+      return item._id == _id;
+    });
 
-    if (_.findWhere(items, findObj)) {
+    if (index !== -1) {
       updateData._id = _id
-      _.extend(_.findWhere(items, findObj), updateData);
+      items[index] = updateData;
       localStorage.setItem(this.keyName, JSON.stringify(items));
 
       return updateData;
@@ -83,23 +86,22 @@ lsCollection.prototype = {
       return false;
     }
   },
-  
-  delete: function (_id) {
-    var items = localStorage.getItem(this.keyName)
-    var findObj = {
-      _id: _id
-    }
-    items = JSON.parse(items)
 
-    if (_.findWhere(items, findObj)) {
-      items = _.without(items, _.findWhere(items, findObj))
+  delete: function (_id) {
+    var items = this.getAll()
+    var index = items.findIndex(function (item) {
+      return item._id == _id;
+    });
+
+    if (index !== -1) {
+      items.splice(index, 1);
       localStorage.setItem(this.keyName, JSON.stringify(items))
       return true
     } else {
       return false
     }
   },
-  
+
   flash: function () {
     localStorage.setItem(this.keyName, null)
     console.log("all data has been flased from " + this.keyName)
