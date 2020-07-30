@@ -19,15 +19,27 @@ lsCollection.prototype = {
   getAll: function () {
     var items = localStorage.getItem(this.keyName);
     items = JSON.parse(items);
-    if (items)
-      return items;
-    else
-      return [];
+    return items ? items : [];
+  },
+
+  insert: function (obj) {
+    if (typeof obj !== 'object') throw "object required, given " + typeof obj;
+
+    var id = this.generateId();
+    var items = this.getAll();
+
+    obj._id = id
+    items.push(obj)
+    localStorage.setItem(this.keyName, JSON.stringify(items))
+
+    return obj;
   },
 
   find: function (_id) {
+    if (typeof _id !== 'number') throw "_id must be numeric, given " + typeof _id;
+
     return this.getAll().find(function (obj) {
-      return obj._id == _id
+      return obj._id === _id
     })
   },
 
@@ -37,7 +49,7 @@ lsCollection.prototype = {
 
     return items.find(function (item) {
       return Object.keys(findObj).every(function (key) {
-        return item[key] == findObj[key]
+        return item[key] === findObj[key]
       })
     })
   },
@@ -45,35 +57,23 @@ lsCollection.prototype = {
   where: function (findObj) {
     if (typeof findObj !== 'object') throw "object required, given " + typeof findObj;
     var items = this.getAll();
-
-    var result = items.find(function (item) {
+    var matches = []
+    items.find(function (item) {
       return Object.keys(findObj).every(function (key) {
-        return item[key] == findObj[key]
+        if (item[key] === findObj[key]) {
+          matches.push(item)
+        }
       })
     })
-
-    return result == undefined ? [] : result;
-
-  },
-
-  insert: function (obj) {
-    if (typeof obj !== 'object') throw "object required, given " + typeof obj;
-    var items = this.getAll()
-    var generatedId = this.generateId()
-
-    obj._id = generatedId
-
-    items.push(obj)
-    localStorage.setItem(this.keyName, JSON.stringify(items))
-
-    return obj;
-
+    return matches;
   },
 
   update: function (_id, updateData) {
+    if (typeof _id !== 'number') throw "_id must be numeric, given " + typeof _id;
+
     var items = this.getAll()
     var index = items.findIndex(function (item) {
-      return item._id == _id;
+      return item._id === _id;
     });
 
     if (index !== -1) {
@@ -88,9 +88,11 @@ lsCollection.prototype = {
   },
 
   delete: function (_id) {
+    if (typeof _id !== 'number') throw "_id must be numeric, given " + typeof _id;
+
     var items = this.getAll()
     var index = items.findIndex(function (item) {
-      return item._id == _id;
+      return item._id === _id;
     });
 
     if (index !== -1) {
@@ -103,8 +105,8 @@ lsCollection.prototype = {
   },
 
   flash: function () {
-    localStorage.setItem(this.keyName, null)
-    console.log("all data has been flased from " + this.keyName)
+    localStorage.removeItem(this.keyName);
+    console.log("flashed!")
   }
 
 }

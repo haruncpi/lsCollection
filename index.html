@@ -6,71 +6,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LS Collection</title>
     <script src="ls-collection.js"></script>
+
+    <style>
+        #logBox {
+            border: 1px solid #ddd;
+            min-height: 100px;
+        }
+    </style>
 </head>
 
 <body>
-    <button id="btnAdd">Add</button>
-    <button id="btnGetAll">Get All</button>
 
-    <button id="btnFlash">Flash</button>
 
-    <br>
-
-    <input id="txtFind" type="text" value="1595917282099">
-    <button id="btnFind">Find</button>
-    <button id="btnWhere">Where</button>
-    <button id="btnFindWhere">Find Where</button>
-    <button id="btnDel">Del</button>
-
+    <div>
+        <h1>LS Collection</h1>
+        <button id="btnRunTest">Run Test</button>
+        <button id="btnFlash">Flash</button> <br>
+        <br>
+        Log
+        <pre id="logBox"></pre>
+    </div>
     <script>
         var tblTest = new lsCollection('test')
-        var btnAdd = document.getElementById('btnAdd')
-        var btnGetAll = document.getElementById('btnGetAll')
-        var btnDel = document.getElementById('btnDel')
-        var btnFlash = document.getElementById('btnFlash')
-        var btnFind = document.getElementById('btnFind')
-        var btnFind = document.getElementById('btnFind')
-        var btnFindWhere = document.getElementById('btnFindWhere')
-        var btnWhere = document.getElementById('btnWhere')
+
+        var btnRunTest = document.getElementById('btnRunTest')
+        var logBox = document.getElementById('logBox')
 
         let log = console.log
 
-        btnAdd.addEventListener('click', () => {
+        btnRunTest.addEventListener('click', async () => {
             var random = +new Date();
-            
-            tblTest.insert({
+
+            //insert test
+            var r = await tblTest.insert({
                 name: 'alex-' + random
             })
-            log(tblTest.getAll())
+            log(r)
+            if (typeof r === 'object') {
+                logBox.innerHTML = `${logBox.innerHTML}</br>insert    - passed`
+            } else {
+                logBox.innerHTML = `${logBox.innerHTML}</br>insert    - failed`
+            }
+
+            //find test
+            var r = await tblTest.find(random)
+            log(r)
+            if (typeof r === 'object') {
+                logBox.innerHTML = `${logBox.innerHTML}</br>find      - passed`
+            } else {
+                logBox.innerHTML = `${logBox.innerHTML}</br>find      - failed`
+            }
+
+            // //findWhere test
+            var r = await tblTest.findWhere({
+                _id: random
+            })
+            log(r)
+            if (typeof r === 'object') {
+                logBox.innerHTML = `${logBox.innerHTML}</br>findWhere - passed`
+            } else {
+                logBox.innerHTML = `${logBox.innerHTML}</br>findWhere - failed`
+            }
+
+            //where test
+            var r = await tblTest.where({
+                _id: random
+            })
+            log(r)
+            if (typeof r === 'object' && r.length > 0) {
+                logBox.innerHTML = `${logBox.innerHTML}</br>where     - passed`
+            } else {
+                logBox.innerHTML = `${logBox.innerHTML}</br>where     - failed`
+            }
+
+            //update test
+            var r = await tblTest.update(random, {
+                _id: random,
+                name: 'alex-updated'
+            })
+            log(r)
+            if (typeof r === 'object') {
+                logBox.innerHTML = `${logBox.innerHTML}</br>update     - passed`
+            } else {
+                logBox.innerHTML = `${logBox.innerHTML}</br>update     - failed`
+            }
+
+            //delete test
+            var r = await tblTest.delete(random)
+            if (r) {
+                logBox.innerHTML = `${logBox.innerHTML}</br>delete     - passed`
+            } else {
+                logBox.innerHTML = `${logBox.innerHTML}</br>delete     - failed`
+            }
+
+            logBox.innerHTML = `${logBox.innerHTML}</br>---------------------`
         })
 
-        btnGetAll.addEventListener('click', () => {
-            log(tblTest.getAll())
-        })
-
-        btnFind.addEventListener('click', () => {
-            var val = txtFind.value
-            log(tblTest.find(val))
-        })
-
-        btnFindWhere.addEventListener('click', () => {
-            var val = txtFind.value
-            log(tblTest.findWhere({_id:val}))
-        })
-
-        btnWhere.addEventListener('click', () => {
-            var val = txtFind.value
-            log(tblTest.where({_id:val}))
-        })
-
-        btnDel.addEventListener('click', () => {
-            var val = txtFind.value
-            log(tblTest.delete(val))
-        })
 
         btnFlash.addEventListener('click', () => {
             tblTest.flash()
             log('flashed!')
+            logBox.innerHTML = ''
         })
     </script>
 </body>
