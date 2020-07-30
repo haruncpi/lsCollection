@@ -4,12 +4,9 @@
 </p>
 <p align="center">Manage browser localStorage key as an object collection.</p>
 
-### Dependency
-- undescore js
 
 ### Usages
 ```markup
-<script src="underscore.min.js"></script>
 <script src="ls-collection.js"></script>
 ```
 
